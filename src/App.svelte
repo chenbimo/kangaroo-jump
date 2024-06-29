@@ -86,7 +86,7 @@
                     {#each sitesGrid as item (item.siteKey)}
                         <div class="box">
                             <div class="inner">
-                                <a class="link" target="_blank" href={item.siteLink}>
+                                <a class="link" target="_blank" href={item.siteLink} on:click={() => (isActiveKuaiTiao = false)}>
                                     <div class="dot"></div>
                                     <div class="text">{item.siteName}</div>
                                 </a>
