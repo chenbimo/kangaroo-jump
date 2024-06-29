@@ -2,6 +2,8 @@
 
 ![袋鼠快跳](https://static.yicode.tech/logo/kuaitiao3.png)
 
+开源地址：[https://github.com/chenbimo/kangaroo-jump](https://github.com/chenbimo/kangaroo-jump)
+
 **袋鼠快跳**，是一个以 `简单快捷` 为目标的网站快导航 `油猴脚本`。
 
 本工具的理念就是，`用最快的速度访问我们最常用的50个网站`。
