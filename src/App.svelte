@@ -27,15 +27,16 @@
     let siteName = ''; // 导航名称
     let siteLink = ''; // 导航地址
     let sitesGrid = [];
+    let sitesMap = {};
     // 功能集
 
     // 监听快捷键
-    const handler = createKeybindingsHandler({
+    const handlerKeydown = createKeybindingsHandler({
         'Control+q': () => {
             isActiveKuaiTiao = !isActiveKuaiTiao;
         }
     });
-    window.addEventListener('keydown', handler);
+    window.addEventListener('keydown', handlerKeydown);
 
     // 渲染SVG
     const getSvgCode = (data) => {
@@ -44,23 +45,26 @@
 
     // 渲染站点列表
     const renderSiteGrids = () => {
-        const listKeys = GM_listValues();
-        const listValues = listKeys.map((key) => {
-            const siteGroup = GM_getValue(key);
-            const [siteName, siteLink] = siteGroup.split('|');
-            return {
-                siteName: siteName,
-                siteLink: siteLink,
-                siteKey: key
+        sitesGrid = GM_listValues().map((key, index) => {
+            const group = GM_getValue(key);
+            const data = {
+                name: group.name,
+                link: group.link,
+                key: group.key
             };
+            sitesMap[key] = data;
+            return data;
         });
-        sitesGrid = listValues;
     };
 
     // 添加导航
     const fnAddSite = () => {
         const siteKey = generateRandomString(10);
-        GM_setValue(siteKey, siteName + '|' + siteLink);
+        GM_setValue(siteKey, {
+            name: siteName,
+            link: siteLink,
+            key: siteKey
+        });
         siteName = '';
         siteLink = '';
         isActiveAddDialog = false;
@@ -77,7 +81,7 @@
     let draggedElement = null;
 
     document.addEventListener('dragstart', function (e) {
-        draggedElement = e.target;
+        draggedElement = e.target.closest('.box');
         e.dataTransfer.setData('text/plain', null);
     });
 
@@ -86,13 +90,44 @@
     });
 
     document.addEventListener('drop', function (e) {
-        console.log('🚀 ~ e:', e);
         e.preventDefault();
-        if (e.target.className === 'box') {
-            // const temp = draggedElement.cloneNode(true);
-            // draggedElement.parentNode.insertBefore(e.target, draggedElement);
-            // draggedElement.parentNode.insertBefore(draggedElement, e.target);
-            // draggedElement = temp;
+        const boxEl = e.target.closest('.box');
+        if (boxEl) {
+            const siteKeyOld = draggedElement.dataset.key;
+            const siteKeyNew = boxEl.dataset.key;
+            const siteIndexOld = Number(draggedElement.dataset.index);
+            const siteIndexNew = Number(boxEl.dataset.index);
+            const siteItemOld = sitesMap[siteKeyOld];
+            const siteItemNew = sitesMap[siteKeyNew];
+            const sitesGrid2 = [];
+            for (let item of sitesGrid) {
+                if (item.key !== siteKeyOld) {
+                    // 如果是从后面移到前面
+                    if (siteIndexOld > siteIndexNew) {
+                        if (item.key !== siteKeyNew) {
+                            sitesGrid2.push(item);
+                        } else {
+                            sitesGrid2.push(siteItemOld);
+                            sitesGrid2.push(siteItemNew);
+                        }
+                    } else {
+                        // 如果是从前面移到后面
+                        if (item.key !== siteKeyOld) {
+                            sitesGrid2.push(item);
+                            if (item.key === siteKeyNew) {
+                                sitesGrid2.push(siteItemOld);
+                            }
+                        }
+                    }
+                }
+            }
+            sitesGrid2.map((item) => {
+                GM_deleteValue(item.key);
+            });
+            sitesGrid2.map((item) => {
+                GM_setValue(item.key, item);
+            });
+            sitesGrid = sitesGrid2;
         }
     });
 
@@ -106,15 +141,15 @@
         <div class="panel">
             <div class="group">
                 <div class="grid" id="grid">
-                    {#each sitesGrid as item (item.siteKey)}
-                        <div class="box" draggable="true">
+                    {#each sitesGrid as item, index (item.key)}
+                        <div class="box" data-key={item.key} data-index={index} draggable="true">
                             <div class="inner">
-                                <a class="link" target="_blank" href={item.siteLink} on:click={() => (isActiveKuaiTiao = false)}>
+                                <a class="link" target="_blank" href={item.link} on:click={() => (isActiveKuaiTiao = false)}>
                                     <div class="dot"></div>
-                                    <div class="text">{item.siteName}</div>
+                                    <div class="text">{item.name}</div>
                                 </a>
 
-                                <div class="close" on:click={fnDelSite(item.siteKey)} aria-hidden="true">{@html getSvgCode(closeSvg)}</div>
+                                <div class="close" on:click={fnDelSite(item.key)} aria-hidden="true">{@html getSvgCode(closeSvg)}</div>
                             </div>
                         </div>
                     {/each}
