@@ -1,6 +1,5 @@
 <script>
     // 依赖集
-    import { fade } from 'svelte/transition';
     import { createKeybindingsHandler } from 'tinykeys';
     import { GM_setValue, GM_getValue, GM_listValues, GM_deleteValue } from '$';
     // 图片集
@@ -10,6 +9,7 @@
     import githubSvg from './assets/github.svg?raw';
     import gouSvg from './assets/gou.svg?raw';
     import closeSvg from './assets/close.svg?raw';
+    import pointerSvg from './assets/pointer.svg?raw';
     // 组件集
     // 工具集
     // 生成随机数
@@ -29,6 +29,7 @@
     let siteLink = ''; // 导航地址
     let sitesGrid = [];
     let sitesMap = {};
+    let dragoverTime = 0;
     // 功能集
 
     // 监听快捷键
@@ -87,17 +88,30 @@
 
     document.addEventListener('dragstart', function (e) {
         draggedElement = e.target.closest('.box');
-        e.dataTransfer.setData('text/plain', null);
     });
 
     document.addEventListener('dragover', function (e) {
         e.preventDefault(); // 允许拖放
+        const nowMs = Date.now();
+        if (nowMs - dragoverTime > 100) {
+            dragoverTime = nowMs;
+            document.querySelectorAll('.box .inner').forEach((el) => {
+                el.closest('.inner').classList.remove('move');
+            });
+            const boxInnerEl = e.target.closest('.inner');
+            if (boxInnerEl) {
+                boxInnerEl.classList.add('move');
+            }
+        }
     });
 
     document.addEventListener('drop', function (e) {
         e.preventDefault();
         const boxEl = e.target.closest('.box');
         if (boxEl) {
+            document.querySelectorAll('.box .inner').forEach((el) => {
+                el.closest('.inner').classList.remove('move');
+            });
             const siteKeyOld = draggedElement.dataset.key;
             const siteKeyNew = boxEl.dataset.key;
             if (siteKeyOld === siteKeyNew) return;
@@ -150,6 +164,7 @@
                     {#each sitesGrid as item, index (item.key)}
                         <div class="box" data-key={item.key} data-index={index} draggable="true">
                             <div class="inner">
+                                <div class="pointer">{@html getSvgCode(pointerSvg)}</div>
                                 <a class="link" target="_blank" href={item.link} on:click={() => (isActiveKuaiTiao = false)}>
                                     <div class="dot"></div>
                                     <div class="text">{item.name}</div>
@@ -239,6 +254,7 @@
                     flex: 0 0 calc(100% / 6);
                     margin-bottom: 15px;
                     .inner {
+                        position: relative;
                         height: 40px;
                         background-color: #555;
                         border-radius: 20px;
@@ -247,6 +263,23 @@
                         display: flex;
                         justify-content: space-between;
                         align-items: center;
+                        &.move {
+                            .pointer {
+                                .shou {
+                                    fill: #e33;
+                                }
+                            }
+                        }
+                        .pointer {
+                            position: absolute;
+                            height: 100%;
+                            width: 14px;
+                            left: -13px;
+                            font-size: 14px;
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: flex-end;
+                        }
                         .link {
                             flex: 1 1 100%;
                             display: flex;
