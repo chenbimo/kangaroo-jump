@@ -73,6 +73,29 @@
         renderSiteGrids();
     };
 
+    // 拖放
+    let draggedElement = null;
+
+    document.addEventListener('dragstart', function (e) {
+        draggedElement = e.target;
+        e.dataTransfer.setData('text/plain', null);
+    });
+
+    document.addEventListener('dragover', function (e) {
+        e.preventDefault(); // 允许拖放
+    });
+
+    document.addEventListener('drop', function (e) {
+        console.log('🚀 ~ e:', e);
+        e.preventDefault();
+        if (e.target.className === 'box') {
+            // const temp = draggedElement.cloneNode(true);
+            // draggedElement.parentNode.insertBefore(e.target, draggedElement);
+            // draggedElement.parentNode.insertBefore(draggedElement, e.target);
+            // draggedElement = temp;
+        }
+    });
+
     // 执行集
     renderSiteGrids();
 </script>
@@ -84,7 +107,7 @@
             <div class="group">
                 <div class="grid" id="grid">
                     {#each sitesGrid as item (item.siteKey)}
-                        <div class="box">
+                        <div class="box" draggable="true">
                             <div class="inner">
                                 <a class="link" target="_blank" href={item.siteLink} on:click={() => (isActiveKuaiTiao = false)}>
                                     <div class="dot"></div>
@@ -270,6 +293,7 @@
                 flex: 0 0 10%;
                 display: flex;
                 justify-content: center;
+                align-items: center;
                 font-size: 24px;
                 .icon {
                     cursor: pointer;
