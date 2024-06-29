@@ -1,0 +1,32 @@
+{
+    "name": "kangaroo-jump",
+    "private": false,
+    "version": "1.0.0",
+    "type": "module",
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org"
+    },
+    "author": "chensuiyi <bimostyle@qq.com>",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/chenbimo/kangaroo-jump"
+    },
+    "homepage": "https://chensuiyi.me",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview"
+    },
+    "devDependencies": {
+        "@sveltejs/vite-plugin-svelte": "3.1.1",
+        "sass": "^1.77.6",
+        "svelte": "^4.2.18",
+        "svelte-preprocess": "^6.0.1",
+        "vite": "^5.3.2",
+        "vite-plugin-monkey": "^4.0.4"
+    },
+    "dependencies": {
+        "tinykeys": "^2.1.0"
+    }
+}
