@@ -1,5 +1,6 @@
 <script>
     // 依赖集
+    import { fade } from 'svelte/transition';
     import { createKeybindingsHandler } from 'tinykeys';
     import { GM_setValue, GM_getValue, GM_listValues, GM_deleteValue } from '$';
     // 图片集
@@ -99,6 +100,7 @@
         if (boxEl) {
             const siteKeyOld = draggedElement.dataset.key;
             const siteKeyNew = boxEl.dataset.key;
+            if (siteKeyOld === siteKeyNew) return;
             const siteIndexOld = Number(draggedElement.dataset.index);
             const siteIndexNew = Number(boxEl.dataset.index);
             const siteItemOld = sitesMap[siteKeyOld];
