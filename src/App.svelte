@@ -59,16 +59,20 @@
 
     // 添加导航
     const fnAddSite = () => {
-        const siteKey = generateRandomString(10);
-        GM_setValue(siteKey, {
-            name: siteName,
-            link: siteLink,
-            key: siteKey
-        });
-        siteName = '';
-        siteLink = '';
-        isActiveAddDialog = false;
-        renderSiteGrids();
+        if (sitesGrid.length < 100) {
+            const siteKey = generateRandomString(10);
+            GM_setValue(siteKey, {
+                name: siteName,
+                link: siteLink,
+                key: siteKey
+            });
+            siteName = '';
+            siteLink = '';
+            isActiveAddDialog = false;
+            renderSiteGrids();
+        } else {
+            alert('常用导航熟练不能超过100个');
+        }
     };
 
     // 删除导航
