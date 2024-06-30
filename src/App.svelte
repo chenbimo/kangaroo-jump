@@ -220,8 +220,11 @@
         border-radius: 10px;
         font-size: 14px;
         a {
-            text-decoration: none;
-            color: inherit;
+            text-decoration: none !important;
+            color: inherit !important;
+            &:hover {
+                text-decoration: none !important;
+            }
         }
         & * {
             box-sizing: border-box;
@@ -301,6 +304,8 @@
                             flex: 0 0 auto;
                             font-size: 18px;
                             cursor: pointer;
+                            display: flex;
+                            align-items: center;
                             .close-icon {
                                 fill: #666666;
                                 transition: all 0.2s;
@@ -331,6 +336,8 @@
                             white-space: nowrap;
                             overflow: hidden;
                             text-overflow: ellipsis;
+                            color: #eee !important;
+                            text-decoration: none !important;
                         }
                     }
                 }
