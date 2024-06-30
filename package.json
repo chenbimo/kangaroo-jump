@@ -1,7 +1,7 @@
 {
     "name": "kangaroo-jump",
     "private": false,
-    "version": "1.1.0",
+    "version": "1.1.1",
     "type": "module",
     "publishConfig": {
         "access": "public",
