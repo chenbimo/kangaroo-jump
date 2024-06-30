@@ -85,7 +85,12 @@
 
     // 拖放
     let draggedElement = null;
-
+    document.addEventListener('click', function (e) {
+        const kuaitiaoElement = e.target.closest('.kuaitiao');
+        if (!kuaitiaoElement) {
+            isActiveKuaiTiao = false;
+        }
+    });
     document.addEventListener('dragstart', function (e) {
         draggedElement = e.target.closest('.box');
     });
