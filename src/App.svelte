@@ -219,6 +219,17 @@
         border: 2px solid #999;
         border-radius: 10px;
         font-size: 14px;
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        & * {
+            box-sizing: border-box;
+            padding: 0;
+            border: 0;
+            margin: 0;
+            outline: 0;
+        }
         &.active {
             display: block;
         }
